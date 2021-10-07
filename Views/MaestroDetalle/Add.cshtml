@@ -1,0 +1,125 @@
+﻿@model MaestroDetalleMVC.Models.ViewModels.VentaViewModel
+
+@{
+    ViewBag.Title = "Maestro Detalle";
+}
+<h2>@ViewBag.Title</h2>
+
+<div style="color: red">
+    @ViewBag.Message
+</div>
+
+
+
+@using (Html.BeginForm("Add", "MaestroDetalle", FormMethod.Post))
+{ 
+    <div class="row">
+        <div class="form-group">
+             @Html.LabelFor(d=>d.Cliente)
+             @Html.TextBoxFor(d=>d.Cliente)
+        </div>
+
+
+    </div>
+
+  
+    <hr />
+    <div class="row">
+        <div class="form-group">
+            Cantidad
+            <input type="text" id="Cantidad" />
+            Nombre
+            <input type="text" id="Nombre" />
+            Precio
+            <input type="number" id="Precio" />
+            <input value="Agregar" type="button" onclick="AgregarConcepto(); return false;" />
+        </div>
+
+            <div id="divConceptos">
+
+                <table id="tablaconceptos" style="width:100%">
+                    <tr>
+                        <td>Cantidad</td>
+                        <td>Nombre</td>
+                        <td>Precio Unitario</td>
+                        <td>Total</td>
+                    </tr>
+                </table>
+            </div>
+     
+
+        <div class="form-group">
+            <input type="submit" />
+        </div>
+    </div>
+}
+
+<script>
+        var num = 0; //variable global que va ayudar a indicar cual es el numero de indica que vamos
+
+        //th =  define una celda como encabezado de un grupo de celdas en una tabla. La naturaleza exacta de este grupo está definida por los atributos scope y headers
+        //tr = representa una fila de una tabla (tabla), pueden ser de encabezado (th) o de datos (td).
+        function AgregarConcepto() {
+
+            let Cantidad = document.getElementById("Cantidad").value;
+            let Precio = document.getElementById("Precio").value;
+            let Nombre = document.getElementById("Nombre").value;
+
+            let Tabla = document.getElementById("tablaconceptos");
+            let TR = document.createElement("tr"); //se ah creado un tr en memoria //el documento es create element tener cuidado con autocompletar con lo que te manda C#
+
+            let TDCantidad = document.createElement("td")
+            let TDNombre = document.createElement("td")
+            let TDPrecio = document.createElement("td")
+            let TDTotal = document.createElement("td")
+
+            TR.appendChild(TDCantidad);
+            TR.appendChild(TDNombre);
+            TR.appendChild(TDPrecio);  // ESTO VAINILLA JAVASCRIPT
+            TR.appendChild(TDTotal);
+
+            TDCantidad.innerHTML = Cantidad;
+            TDNombre.innerHTML = Nombre;
+            TDPrecio.innerHTML = Precio; //aqui le creamos texto el valor de documento.getElementoId(Cantidad etc0)
+            TDTotal.innerHTML = parseFloat(Cantidad) * parseFloat(Precio); //Solo lo visualizamos , lo calculamos en el backEnd no lo enviamos
+            Tabla.appendChild(TR);
+
+            //AGREGAMOS LOS HIDDENS - MACTH CON NUESTRA CAPA DE MODELOS DE DATOS
+            let DivConceptos = document.getElementById("divConceptos")
+
+            let HiddenIndex = document.createElement("input");
+            let HiddenCantidad = document.createElement("input"); //son cada uno de los indices
+            let HiddenNombre = document.createElement("input");
+            let HiddenPrecio = document.createElement("input");
+
+            HiddenIndex.name = "conceptos.Index";
+            HiddenIndex.value = num; //variable global
+            HiddenIndex.type = "hidden";
+
+            HiddenCantidad.name = "conceptos[" + num + "].Cantidad";
+            HiddenCantidad.value = Cantidad;
+            HiddenCantidad.type = "hidden";
+
+            HiddenNombre.name = "conceptos[" + num + "].Nombre";
+            HiddenNombre.value = Nombre;
+            HiddenNombre.type = "hidden";
+
+            HiddenPrecio.name = "conceptos[" + num + "].PrecioUnitario";
+            HiddenPrecio.value = Precio;
+            HiddenPrecio.type = "hidden";
+
+            DivConceptos.appendChild(HiddenIndex);
+            DivConceptos.appendChild(HiddenCantidad);
+            DivConceptos.appendChild(HiddenNombre);
+            DivConceptos.appendChild(HiddenPrecio);
+
+
+
+            document.getElementById("Cantidad").value = "";
+            document.getElementById("Precio").value = "";
+            document.getElementById("Nombre").value = "";
+
+            num++; //una vez agregado un aumentará los hidden
+        
+    }
+</script>
